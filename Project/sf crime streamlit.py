@@ -24,7 +24,7 @@ st.write("""| **Algorithm** | **Parameters** |
 | Logistic regression  | penalty= 'l1', C= 1, solver= 'saga', multi_class= 'multinomial', max_iter= 1 |
 | Logistic regression  | penalty= 'l2', C= 1, solver= 'lbfgs', multi_class= 'ovr', max_iter= 1 |
 | Logistic regression  | penalty= 'l2', C= 1, solver= 'lbfgs, multi_class= 'multinomial', max_iter= 1|
-| SVC           | max_iter= 1, probability= True |
+| SVC           | C= 1.0, gamma= 0.1, kernel= 'rbf', max_iter= 1, probability= True |
 | Random Forest | n_estimators= 1, criterion= 'gini', random_state= 42|
 | XGBoost       | n_estimators= 1, criterion= 'gini', random_state= 42|
 """
@@ -194,7 +194,7 @@ st.write(''' --- ''')
 
 # ---------------------------------->support vector machine<----------------------------------
 st.write("## **SVC(max_iter= 1, probability= True)**")
-supportVectorMachineModel = SVC(max_iter= 1, probability= True)
+supportVectorMachineModel = SVC(C= 1.0, gamma= 0.1, kernel= 'rbf', max_iter= 1, probability= True)
 supportVectorMachineModel.fit(X_train, y_train)
 st.write("#### Predict")
 supportVectorMachineModelPredict = supportVectorMachineModel.predict(X_test).reshape((1))
