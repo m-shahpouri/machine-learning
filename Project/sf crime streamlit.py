@@ -193,7 +193,7 @@ st.write(pd.DataFrame(logisticRegressionl2multinomialModelPredictProba, columns=
 st.write(''' --- ''')
 
 # ---------------------------------->support vector machine<----------------------------------
-st.write("## **SVC(max_iter= 1, probability= True)**")
+st.write("## **SVC(C= 1.0, gamma= 0.1, kernel= 'rbf', max_iter= 1, probability= True)**")
 supportVectorMachineModel = SVC(C= 1.0, gamma= 0.1, kernel= 'rbf', max_iter= 1, probability= True)
 supportVectorMachineModel.fit(X_train, y_train)
 st.write("#### Predict")
