@@ -9,7 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 
 
-train = pd.read_csv('C:/Users/Rasa/Desktop/train.csv.zip', parse_dates=['Dates'])
+train = pd.read_csv('/home/rasa/train.csv.zip', parse_dates=['Dates'])
 
 st.write("""# San Francisco Crime Classification
 ## Predict the category of crimes that occurred in the city by the bay""")
