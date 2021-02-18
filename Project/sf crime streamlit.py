@@ -9,7 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 
 
-train = pd.read_csv('/home/rasa/train.csv.zip', parse_dates=['Dates'])
+train = pd.read_csv('/media/rasa/207A54047A53D55E/E into G/dars/karshenasi arshad/term 3/machine learning/project/train.csv.zip', parse_dates=['Dates'])
 
 st.write("""# San Francisco Crime Classification
 ## Predict the category of crimes that occurred in the city by the bay""")
@@ -26,7 +26,7 @@ st.write("""| **Algorithm** | **Parameters** |
 | Logistic regression  | penalty= 'l2', C= 1, solver= 'lbfgs, multi_class= 'multinomial', max_iter= 1|
 | SVC           | C= 1.0, gamma= 0.1, kernel= 'rbf', max_iter= 1, probability= True |
 | Random Forest | n_estimators= 1, criterion= 'gini', random_state= 42|
-| XGBoost       | n_estimators= 1, criterion= 'gini', random_state= 42|
+| XGBoost       | n_estimators= 1, criterion= 'gini',learning_rate= 0.1, max_depth= 3 ,gamma= 10, reg_lambda= 1 , objective= 'multi:softmax', random_state= 42|
 """
 )
 
@@ -221,9 +221,9 @@ st.write(pd.DataFrame(randomForestClassifierModelPredictProba, columns= labelEnc
 st.write(''' --- ''')
 
 # ---------------------------------->extreme gradient boosting<----------------------------------
-st.write("## **XGBClassifier(n_estimators= 1, criterion= 'gini', random_state= 42)**")
+st.write("## **XGBClassifier(n_estimators= 1, criterion= 'gini',learning_rate= 0.1, max_depth= 3 ,gamma= 10, reg_lambda= 1 , objective= 'multi:softmax', random_state= 42)**")
 
-XGBClassifierModel = XGBClassifier(n_estimators= 1, criterion= 'gini'  , random_state= 42)
+XGBClassifierModel = XGBClassifier(n_estimators= 1, criterion= 'gini',learning_rate= 0.1, max_depth= 3 ,gamma= 10, reg_lambda= 1 , objective= 'multi:softmax', random_state= 42)
 XGBClassifierModel.fit(X_train, y_train)
 st.write("#### Predict")
 XGBClassifierModelPredict = XGBClassifierModel.predict(X_test).reshape((1))
