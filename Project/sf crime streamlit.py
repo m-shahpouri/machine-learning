@@ -5,8 +5,9 @@ from sklearn.svm import SVC
 from xgboost import XGBClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier
 
 
 train = pd.read_csv('/media/rasa/207A54047A53D55E/E into G/dars/karshenasi arshad/term 3/machine learning/project/train.csv.zip', parse_dates=['Dates'])
@@ -25,7 +26,10 @@ st.write("""| **Algorithm** | **Parameters** |
 | Logistic regression  | penalty= 'l2', C= 1, solver= 'lbfgs', multi_class= 'ovr', max_iter= 1 |
 | Logistic regression  | penalty= 'l2', C= 1, solver= 'lbfgs, multi_class= 'multinomial', max_iter= 1|
 | SVC           | C= 1.0, gamma= 0.1, kernel= 'rbf', max_iter= 1, probability= True |
+| Decision Tree | criterion= 'gini', max_depth= 3, random_state= 42 |
 | Random Forest | n_estimators= 1, criterion= 'gini', random_state= 42|
+| AdaBoost | base_estimator= None, n_estimators= 3 |
+| Gradient Boost | learning_rate= 0.1, n_estimators= 1, max_depth= 3, random_state= 42 |
 | XGBoost       | n_estimators= 1, criterion= 'gini',learning_rate= 0.1, max_depth= 3 ,gamma= 10, reg_lambda= 1 , objective= 'multi:softmax', random_state= 42|
 """
 )
@@ -75,18 +79,12 @@ def split_date(data):
 
     data['n_days'] = (data['Date'] - data['Date'].min()).apply(lambda x: x.days)
 
-
-
-
-
-
 # """# **Category encoding**"""
 labelEncoderCategory = LabelEncoder()
 target = labelEncoderCategory.fit_transform(train['Category'])
 
 split_date(train)
 # split_date(test)
-
 
 PdDistrict = st.sidebar.selectbox('PdDistrict', labelEncoderPdDistrict.inverse_transform(train['PdDistrict'].unique()))
 DayOfWeek = st.sidebar.selectbox('DayOfWeek', labelEncoderDayOfWeek.inverse_transform(np.sort(train['DayOfWeek'].unique())))
@@ -123,18 +121,14 @@ def user_input_features():
     return features
 
 X_test = user_input_features()
+st.write("## User input parameters")
+st.write(X_test)
 
 # """# **Drop colums**"""
 train.drop(['Dates','Date','Descript','Resolution', 'Category'], axis='columns', inplace=True)
 
 X_train = train
 y_train = target
-
-
-st.write("## User input parameters")
-st.write(X_test)
-
-st.write(''' --- ''')
 
 # ---------------------------------->logistic regression l1 ovr<----------------------------------
 logisticRegressionl1ovrModel = LogisticRegression(penalty= 'l1', C= 1, solver= 'saga', multi_class= 'ovr', max_iter=1 )
@@ -206,9 +200,23 @@ st.write(pd.DataFrame(supportVectorMachineModelPredictProba, columns= labelEncod
 
 st.write(''' --- ''')
 
+# ---------------------------------->decision tree<----------------------------------
+st.write("## **DecisionTreeClassifier(criterion='gini', max_depth= 3, random_state=42)**")
+decisionTreeClassifierModel = DecisionTreeClassifier(criterion='gini', max_depth= 3, random_state=42)
+decisionTreeClassifierModel.fit(X_train, y_train)
+st.write("#### Predict")
+decisionTreeClassifierModelPredict = decisionTreeClassifierModel.predict(X_test).reshape((1))
+decisionTreeClassifierModelPredict = labelEncoderCategory.inverse_transform(decisionTreeClassifierModelPredict)
+st.write(pd.DataFrame(decisionTreeClassifierModelPredict, columns= ["Crime"]))
+st.write("#### Predict probablities")
+decisionTreeClassifierModelPredictProba = decisionTreeClassifierModel.predict_proba(X_test)
+st.write(pd.DataFrame(decisionTreeClassifierModelPredictProba, columns= labelEncoderCategory.inverse_transform(np.arange(39))))
+
+st.write(''' --- ''')
+
 # ---------------------------------->random forest<----------------------------------
-st.write("## **RandomForestClassifier(n_estimators=1, criterion='gini', random_state=42)**")
-randomForestClassifierModel = RandomForestClassifier(n_estimators=1, criterion='gini', random_state=42)
+st.write("## **RandomForestClassifier(n_estimators= 1, criterion='gini', random_state=42)**")
+randomForestClassifierModel = RandomForestClassifier(n_estimators= 1, criterion= 'gini', random_state= 42)
 randomForestClassifierModel.fit(X_train, y_train)
 st.write("#### Predict")
 randomForestClassifierModelPredict = randomForestClassifierModel.predict(X_test).reshape((1))
@@ -217,6 +225,34 @@ st.write(pd.DataFrame(randomForestClassifierModelPredict, columns= ["Crime"]))
 st.write("#### Predict probablities")
 randomForestClassifierModelPredictProba = randomForestClassifierModel.predict_proba(X_test)
 st.write(pd.DataFrame(randomForestClassifierModelPredictProba, columns= labelEncoderCategory.inverse_transform(np.arange(39))))
+
+st.write(''' --- ''')
+
+# ---------------------------------->adaboost<----------------------------------
+st.write("## **AdaBoostClassifier(base_estimator= None, n_estimators= 3)**")
+adaBoostClassifierModel = AdaBoostClassifier(base_estimator= None, n_estimators= 3)
+adaBoostClassifierModel.fit(X_train, y_train)
+st.write("#### Predict")
+adaBoostClassifierModelPredict = adaBoostClassifierModel.predict(X_test).reshape((1))
+adaBoostClassifierModelPredict = labelEncoderCategory.inverse_transform(adaBoostClassifierModelPredict)
+st.write(pd.DataFrame(adaBoostClassifierModelPredict, columns= ["Crime"]))
+st.write("#### Predict probablities")
+adaBoostClassifierModelPredictProba = adaBoostClassifierModel.predict_proba(X_test)
+st.write(pd.DataFrame(adaBoostClassifierModelPredictProba, columns= labelEncoderCategory.inverse_transform(np.arange(39))))
+
+st.write(''' --- ''')
+
+# ---------------------------------->gradient boost<----------------------------------
+st.write("## **GradientBoostingClassifier(learning_rate= 0.1, n_estimators= 1, max_depth= 3, random_state= 42)**")
+gradientBoostingClassifierModel = GradientBoostingClassifier(learning_rate= 0.1, n_estimators= 1, max_depth= 3, random_state= 42)
+gradientBoostingClassifierModel.fit(X_train, y_train)
+st.write("#### Predict")
+gradientBoostingClassifierModelPredict = gradientBoostingClassifierModel.predict(X_test).reshape((1))
+gradientBoostingClassifierModelPredict = labelEncoderCategory.inverse_transform(gradientBoostingClassifierModelPredict)
+st.write(pd.DataFrame(gradientBoostingClassifierModelPredict, columns= ["Crime"]))
+st.write("#### Predict probablities")
+gradientBoostingClassifierModelPredictProba = gradientBoostingClassifierModel.predict_proba(X_test)
+st.write(pd.DataFrame(gradientBoostingClassifierModelPredictProba, columns= labelEncoderCategory.inverse_transform(np.arange(39))))
 
 st.write(''' --- ''')
 
@@ -240,13 +276,17 @@ st.write(
     # **Sources:**
 
     1.   https://www.kaggle.com/c/sf-crime
-    2.   https://www.kaggle.com/yannisp/sf-crime-analysis-prediction
-    3.   https://www.kaggle.com/sjun4530/sf-crime-classification-hyper/
-    4.   https://scikit-learn.org/stable/modules/classes.html
-    5.   https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
-    6.   https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
-    7.   https://xgboost.readthedocs.io/en/latest/python/python_api.html
+    2.   https://docs.streamlit.io/en/stable/api.html
+    3.   https://scikit-learn.org/stable/modules/classes.html
+    4.   https://www.kaggle.com/yannisp/sf-crime-analysis-prediction
+    5.   https://www.kaggle.com/sjun4530/sf-crime-classification-hyper/
+    6.   https://xgboost.readthedocs.io/en/latest/python/python_api.html
+    7.   https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html
     8.   https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF
-    9.   https://docs.streamlit.io/en/stable/api.html
+    9.   https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
+    10.  https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html
+    11.  https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
+    12.  https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
+    13.  https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html
     '''
 )
