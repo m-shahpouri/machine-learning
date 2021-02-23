@@ -27,10 +27,9 @@ import pandas as pd
 import urllib.request
 import xgboost as xgb
 import seaborn as sns
-# import geoplot as gplt
-# import geopandas as gpd
-# import contextily as ctx
-import matplotlib as mpl
+import geoplot as gplt
+import geopandas as gpd
+import contextily as ctx
 from matplotlib import cm
 from sklearn.svm import SVC
 from xgboost import XGBClassifier
@@ -96,7 +95,7 @@ print("No. of category: {}".format(train['Category'].nunique()))
 print("No. of Descript: {}".format(train['Descript'].nunique()))
 print("No. of PdDistrict: {}".format(train['PdDistrict'].nunique()))
 print("No. of Resolution: {}".format(train['Resolution'].nunique()))
-print("No. of Resolution: {}".format(train['Address'].nunique()))
+print("No. of Address: {}".format(train['Address'].nunique()))
 
 """# **Train features data type**"""
 
@@ -425,7 +424,7 @@ X_test = test
 | Logistic regression  | penalty= 'l2', C= 1, solver= 'lbfgs, multi_class= 'multinomial', max_iter= 1 |
 | SVC           | C= 1.0, gamma= 0.1, kernel= 'rbf', max_iter= 1, probability= True |
 | Decision Tree | criterion= 'gini', max_depth= 3, random_state= 42 |
-| Random Forest | n_estimators=1, criterion='gini', max_depth= 3, random_state=42 |
+| Random Forest | n_estimators=1, criterion='gini', max_depth= 3, random_state= 42 |
 | AdaBoost      | base_estimator= None, n_estimators= 3|
 | Gradient Boost | learning_rate= 0.1, n_estimators= 1, max_depth= 3, random_state= 42 |
 | XGBoost       | n_estimators= 1, criterion= 'gini',learning_rate= 0.1, max_depth= 3 ,gamma= 10, reg_lambda= 1 , objective= 'multi:softmax', random_state= 42 |
