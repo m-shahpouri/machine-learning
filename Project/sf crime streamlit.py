@@ -10,7 +10,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier
 
 
-train = pd.read_csv('/media/rasa/207A54047A53D55E/E into G/dars/karshenasi arshad/term 3/machine learning/project/train.csv.zip', parse_dates=['Dates'])
+train = pd.read_csv('train.csv.zip', parse_dates=['Dates'])
 
 st.write("""# San Francisco Crime Classification
 ## Predict the category of crimes that occurred in the city by the bay""")
